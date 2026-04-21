@@ -91,7 +91,8 @@ static void fft(std::vector<std::complex<double>> &a, bool invert) {
     int k = __builtin_ctz(roots.size());
     roots.resize(n);
     while ((1 << k) < n) {
-      double ang = 2 * M_PI / (1 << (k + 1));
+      const double PI = std::acos(-1.0);
+      double ang = 2 * PI / (1 << (k + 1));
       // Avoid <cmath>: use std::polar from <complex>
       for (int i = 1 << (k - 1); i < (1 << k); ++i) {
         roots[2 * i] = roots[i];
@@ -314,22 +315,22 @@ int2048 &int2048::operator/=(const int2048 &o) {
   int sgn = sign * o.sign;
   int2048 ua = *this; ua.sign = 1;
   int2048 ub = o; ub.sign = 1;
-  int2048 q, r;
-  divmod_abs(ua, ub, q, r);
-  // floor division adjustment
-  q.sign = (q.a.empty() ? 1 : sgn);
-  if (sgn < 0 && !r.a.empty()) {
-    // q := q - 1
-    int2048 one(1);
-    if (q.sign > 0) {
-      q = abs_sub(q, one);
-      q.sign = q.a.empty() ? 1 : 1;
-    } else {
-      q = abs_add(q, one);
-      q.sign = -1;
+  int2048 q0, r0;
+  divmod_abs(ua, ub, q0, r0);
+  if (sgn >= 0) {
+    // same sign: trunc == floor
+    q0.sign = q0.a.empty() ? 1 : 1;
+    *this = q0;
+  } else {
+    // opposite signs: if remainder, floor is one less in magnitude
+    if (!r0.a.empty()) {
+      int2048 one(1);
+      q0 = abs_add(q0, one);
     }
+    q0.sign = q0.a.empty() ? 1 : -1;
+    *this = q0;
   }
-  *this = q; trim();
+  trim();
   return *this;
 }
 int2048 operator/(int2048 x, const int2048 &y) { return x /= y; }
