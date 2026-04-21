@@ -1,5 +1,114 @@
+// Generated code.cpp for ACMOJ submission
+// Contains int2048 class declaration and implementation
+#include <bits/stdc++.h>
+using namespace std;
+
+#pragma once
+#ifndef SJTU_BIGINTEGER
+#define SJTU_BIGINTEGER
+
+// Integer 1:
+// Implement a signed big integer class that only needs to support simple addition and subtraction
+
+// Integer 2:
+// Implement a signed big integer class that supports addition, subtraction, multiplication, and division, and overload related operators
+
+// Do not use any header files other than the following
+#include <complex>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <vector>
+
+// Do not use "using namespace std;"
+
+namespace sjtu {
+class int2048 {
+private:
+  // sign: 1 for non-negative, -1 for negative; zero represented by empty vec
+  int sign;
+  // base 10^4 per limb to keep multiplication manageable; stored little-endian
+  static const int BASE = 10000;
+  static const int BASE_DIG = 4;
+  std::vector<int> a;
+
+  void trim();
+  static int abs_cmp(const int2048 &x, const int2048 &y);
+  static int2048 abs_add(const int2048 &x, const int2048 &y);
+  static int2048 abs_sub(const int2048 &x, const int2048 &y); // |x|>=|y|
+  static int2048 abs_mul_simple(const int2048 &x, const int2048 &y);
+  static void fft_multiply(const std::vector<int> &A, const std::vector<int> &B, std::vector<int> &C);
+  static int2048 abs_mul(const int2048 &x, const int2048 &y);
+  static void divmod_abs(const int2048 &u, const int2048 &v, int2048 &q, int2048 &r);
+
+public:
+  // Constructors
+  int2048();
+  int2048(long long);
+  int2048(const std::string &);
+  int2048(const int2048 &);
+
+  // The parameter types of the following functions are for reference only, you can choose to use constant references or not
+  // If needed, you can add other required functions yourself
+  // ===================================
+  // Integer1
+  // ===================================
+
+  // Read a big integer
+  void read(const std::string &);
+  // Output the stored big integer, no need for newline
+  void print();
+
+  // Add a big integer
+  int2048 &add(const int2048 &);
+  // Return the sum of two big integers
+  friend int2048 add(int2048, const int2048 &);
+
+  // Subtract a big integer
+  int2048 &minus(const int2048 &);
+  // Return the difference of two big integers
+  friend int2048 minus(int2048, const int2048 &);
+
+  // ===================================
+  // Integer2
+  // ===================================
+
+  int2048 operator+() const;
+  int2048 operator-() const;
+
+  int2048 &operator=(const int2048 &);
+
+  int2048 &operator+=(const int2048 &);
+  friend int2048 operator+(int2048, const int2048 &);
+
+  int2048 &operator-=(const int2048 &);
+  friend int2048 operator-(int2048, const int2048 &);
+
+  int2048 &operator*=(const int2048 &);
+  friend int2048 operator*(int2048, const int2048 &);
+
+  int2048 &operator/=(const int2048 &);
+  friend int2048 operator/(int2048, const int2048 &);
+
+  int2048 &operator%=(const int2048 &);
+  friend int2048 operator%(int2048, const int2048 &);
+
+  friend std::istream &operator>>(std::istream &, int2048 &);
+  friend std::ostream &operator<<(std::ostream &, const int2048 &);
+
+  friend bool operator==(const int2048 &, const int2048 &);
+  friend bool operator!=(const int2048 &, const int2048 &);
+  friend bool operator<(const int2048 &, const int2048 &);
+  friend bool operator>(const int2048 &, const int2048 &);
+  friend bool operator<=(const int2048 &, const int2048 &);
+  friend bool operator>=(const int2048 &, const int2048 &);
+};
+} // namespace sjtu
+
+#endif
+
 // Implementation of int2048
-#include "int2048.h"
+
 
 namespace sjtu {
 
@@ -375,3 +484,17 @@ bool operator<=(const int2048 &x, const int2048 &y) { return !(y < x); }
 bool operator>=(const int2048 &x, const int2048 &y) { return !(x < y); }
 
 } // namespace sjtu
+
+
+#ifndef ONLINE_JUDGE
+int main(){
+  sjtu::int2048 a("") ; a.read("12345678901234567890");
+  sjtu::int2048 b("") ; b.read("-98765432109876543210");
+  cout << (a+b) << "\n";
+  cout << (b-a) << "\n";
+  cout << (a*b) << "\n";
+  cout << (b/ a) << "\n";
+  cout << (b% a) << "\n";
+  return 0;
+}
+#endif

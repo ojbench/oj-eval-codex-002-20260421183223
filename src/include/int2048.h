@@ -19,7 +19,23 @@
 
 namespace sjtu {
 class int2048 {
-  // todo
+private:
+  // sign: 1 for non-negative, -1 for negative; zero represented by empty vec
+  int sign;
+  // base 10^4 per limb to keep multiplication manageable; stored little-endian
+  static const int BASE = 10000;
+  static const int BASE_DIG = 4;
+  std::vector<int> a;
+
+  void trim();
+  static int abs_cmp(const int2048 &x, const int2048 &y);
+  static int2048 abs_add(const int2048 &x, const int2048 &y);
+  static int2048 abs_sub(const int2048 &x, const int2048 &y); // |x|>=|y|
+  static int2048 abs_mul_simple(const int2048 &x, const int2048 &y);
+  static void fft_multiply(const std::vector<int> &A, const std::vector<int> &B, std::vector<int> &C);
+  static int2048 abs_mul(const int2048 &x, const int2048 &y);
+  static void divmod_abs(const int2048 &u, const int2048 &v, int2048 &q, int2048 &r);
+
 public:
   // Constructors
   int2048();
